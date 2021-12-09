@@ -1,0 +1,190 @@
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<app-navbar></app-navbar>
+<div class="container py-5" id="main-container">
+    <div class="row mb-4">
+      <div class="col-lg-5">
+        <h2 class="display-4 font-weight-light"> Liste de villes</h2>
+        <br>
+        <div class="form-group mb-2">
+            <button type="button" *ngIf="authService.isAdmin()" (click)="onOpenModal(null,'add')" class="btn btn-primary bu22" data-toggle="modal"
+                data-target="#exampleModal">
+                <i class="bi bi-plus-circle"></i> Ajouter 
+            </button>
+
+                    <div class="input-group aaaa">
+                        <input (ngModelChange)="searchVille(key.value)" #key="ngModel" ngModel type="text"
+                            class="form-control" placeholder="Nom ville ..." aria-label="Username"
+                            aria-describedby="basic-addon1">
+                        <div class="input-group-append">
+                            <button class="btn btn-success" type="button" (click)="ngOnInit()">
+                                <i class="fa fa-refresh" aria-hidden="true"></i>
+
+                            </button>
+                        </div>
+                    </div>
+        </div>
+
+
+    </div>
+          <!------------------------------------- Alert succes || eroor  --------------------------------------------------------->
+
+    <div class="alert alert-dismissible alert-success"  *ngIf="aletSuccess" >
+        <button type="button" data-dismiss="alert" aria-hidden="true" class="close">×</button>
+
+        <strong>Succès  <i class="fa fa-check"></i>  </strong> {{message}}.
+      </div>
+      <div class="alert alert-dismissible alert-danger"*ngIf="aletEroor" >
+        <button type="button" data-dismiss="alert" aria-hidden="true" class="close">×</button>
+        <strong>Echec </strong>  <i class="fa fa-times-circle"></i> {{message}}.
+      </div>
+    </div>
+    <div class="row text-center">
+      <!-- Team item-->
+    
+      <br>
+
+            <!------------------------------------- affiche villes --------------------------------------------------------->
+
+      <div class="col-xl-3 col-sm-6 mb-5" *ngFor="let v of villes" >
+        <div class="bg rounded shadow-sm py-5 px-4"><img src="/assets/image/{{v.image}}" class="img-fluid rounded-circle mb-3 img-thumbnail shadow-sm">
+          <h5 class="mb-0"><i class="bi bi-geo-alt"></i> {{v.nom}}</h5><span class="small text-uppercase text-muted">Code Postale: &nbsp;{{v.codePostal}}</span>
+          <ul class="social mb-0 list-inline mt-3">
+            <li class="list-inline-item"><a  href="#" class="bg-info social-link"  ><i class=" text-black-50 bi bi-search"></i></a></li>
+            <li *ngIf="authService.isAdmin()" class=" list-inline-item"><a (click)="onOpenModal(v,'edit')"  class=" bg-success social-link"><i class=" text-black-50 bi bi-pencil"></i></a></li>
+            <li *ngIf="authService.isAdmin()" class="list-inline-item"><a (click)="onOpenModal(v,'delete')" class=" bg-danger social-link"><i class="text-black-50 bi bi-trash"></i></a></li>
+          </ul>
+        </div>
+      </div>
+      <!-- End-->
+      <div class="alert alert-dismissible alert-danger" *ngIf="villes?.length==0">
+        <h4 class="alert-heading">Avertissement <i class="bi bi-emoji-neutral"></i> !!</h4>
+        <p class="mb-0"> <b> BASE DE DONNEES VIDE </b> ,essayer d'insérer de nouveaux données  </p>
+      </div>
+     
+     </div>
+  </div>
+
+
+
+
+
+
+        <!------------------------------------- Add ville --------------------------------------------------------->
+
+  <div class="modal fade" id="addVilleModel" tabindex="-1" role="dialog" aria-labelledby="addEmployeeModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title" id="addEmployeeModalLabel">Ajouter une Ville</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <form #addForm="ngForm" (ngSubmit)="onAddVille(addForm)">
+                  <div class="form-group">
+                      <label for="name">Nom ville</label>
+                      <input type="text" ngModel name="nom" class="form-control" id="nom" placeholder="Name" required minlength="4" #name="ngModel">
+                      <span *ngIf="name.invalid && name.touched" class="help-block cc"> Nom ville min 4 caractére ! </span>
+                    </div>
+
+                  <div class="form-group">
+                      <label for="phone"> Code postale</label>
+                      <input type="number" ngModel name="codePostal" class="form-control" id="codePostal"
+                          placeholder=" 1234" required pattern="[0-9]{4}" #code="ngModel">
+                      <span *ngIf="code.invalid && code.touched" class="help-block cc"> Verifier votre code
+                          postale ! </span>
+                  </div>
+                  <div class="form-group">
+                      <label for="image"> Image ville</label><br>
+                      <input ngModel type="file" id="imageid" name="image" accept="image/png, .jpeg, .jpg, image/gif" required #image="ngModel"><br><br>
+                      <span *ngIf="image.invalid && image.touched" class="help-block cc">  champ Image obligatoires ! </span> 
+                    </div>
+                   <div class="modal-footer">
+                      <button type="button" id="add-ville-form" class="btn btn-danger"
+                          data-dismiss="modal">Fermer</button>
+                      <button type="submit" [disabled]="addForm.invalid" class="btn btn-primary">Envoyer</button>
+                  </div>
+
+              </form>
+          </div>
+      </div>
+  </div>
+</div>
+
+
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteVilleModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModelLabel">Effacer ville </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Etes-vous sûr que vous voulez supprimer cette ville " <b class="b">{{deleteVilleid?.nom}}</b> "
+                    </p>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                        <button (click)="onDeleteVille(deleteVilleid.idVille)" class="btn btn-danger"
+                            data-dismiss="modal">Effacer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- ***************************************** Update Ville ***************************-->
+
+    <div class="modal fade" id="updateVilleModal" tabindex="-1" role="dialog" aria-labelledby="addEmployeeModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="addEmployeeModalLabel">Modifer Ville <b> {{editVille?.nom}} </b> </h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form #editForm="ngForm">
+                        <div class="form-group">
+                            <label for="name">Nom ville</label>
+                            <input type="hidden" ngModel="{{editVille?.idVille}}" name="idVille" class="form-control" id="id" placeholder="id">
+                            <input type="text" ngModel={{editVille?.nom}} name="nom" class="form-control" id="nom"
+                            placeholder="Name" required required minlength="4" #nom="ngModel">
+                            <span *ngIf="nom.invalid && nom.touched" class="help-block cc"> Il faut que nom Ville plus
+                                que 4 chigffre ! </span>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone"> Code postale</label>
+                            <input type="number" ngModel={{editVille?.codePostal}} name="codePostal"
+                                class="form-control" id="codePostal" placeholder=" 1234" required pattern="[0-9]{4}"
+                                #codeEd="ngModel">
+                            <span *ngIf="codeEd.invalid && codeEd.touched" class="help-block cc"> Verifier votre code
+                                postale ! </span>
+                        </div>
+                        <input ngModel="{{editVille?.image}}" type="file" id="imageid" name="image"
+                            accept="image/png, .jpeg, .jpg, image/gif"><br><br>
+                         <div class="modal-footer">
+                        <button type="button" id="fermer-ville" class="btn btn-danger"
+                            data-dismiss="modal">Fermer</button>
+                        <button (click)="onUpdateVille(editForm.value)" class="btn btn-primary">Envoyer</button>
+                </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>

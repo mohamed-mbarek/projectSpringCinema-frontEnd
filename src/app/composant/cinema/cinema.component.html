@@ -1,0 +1,253 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+   integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" />
+<app-navbar></app-navbar>
+<div class="container py-5" id="main-container">
+   <div class="row mb-4">
+      <div class="col-lg-5">
+         <h2 class="display-4 font-weight-light">Liste de cinéma</h2>
+         <br />
+         <div class="form-group mb-2">
+            <button type="button" class="btn btn-primary bu22" data-toggle="modal" (click)="onOpenModal(null, 'add')"
+               data-target="#exampleModal">
+               <i class="bi bi-plus-circle"></i> Ajouter
+            </button>
+
+            <div class="input-group aaaa">
+               <input (ngModelChange)="searchCinema(key.value)" #key="ngModel" ngModel type="text" class="form-control"
+                  placeholder="Nom Cinema ..." aria-label="Username" aria-describedby="basic-addon1">
+               <div class="input-group-append">
+                  <button class="btn btn-success" type="button" (click)="ngOnInit()">
+                     <i class="fa fa-refresh" aria-hidden="true"></i>
+
+                  </button>
+               </div>
+            </div>
+         </div>
+         <div class=" aaz row text-center">
+            <div class="alert alert-dismissible alert-danger" *ngIf="cinemas?.length==0">
+               <h4 class="alert-heading">Avertissement <i class="bi bi-emoji-neutral"></i> !!</h4>
+               <p class="mb-0"> <b> BASE DE DONNEES VIDE </b> ,essayer d'insérer de nouveaux données </p>
+            </div>
+         </div>
+      </div>
+      <!------------------------------------- Alert succes || eroor  --------------------------------------------------------->
+      <div class="alert alert-dismissible alert-success" *ngIf="aletSuccess">
+         <button type="button" data-dismiss="alert" aria-hidden="true" class="close">×</button>
+
+         <strong>Succès <i class="fa fa-check"></i> </strong> {{message}}.
+      </div>
+      <div class="alert alert-dismissible alert-danger" *ngIf="aletEroor">
+         <button type="button" data-dismiss="alert" aria-hidden="true" class="close">×</button>
+         <strong>Echec </strong> <i class="fa fa-times-circle"></i> {{message}}.
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-md-3" *ngFor="let c of cinemas">
+         <!-- START widget-->
+         <div class="panel widget">
+            <div style="
+            background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfgOBqZTJSCsGQhaXjp5x2_AF6vOBo77ZfYH6V1l_mqjQTamL_ANfV793afvmDX0Sgq_M&usqp=CAU');
+          " class="panel-body text-center bg-center">
+               <div class="row row-table">
+                  <div class="col-xs-12 text-white">
+                     <img src="/assets/image/{{c.image}}" alt="Image" width="180px" class="img-thumbnail img-circle " />
+                     <h3 class="m0">{{ c.nom }}</h3>
+                     <p class="m0"><i class="bi bi-geo"></i> {{ c.ville.nom }}</p>
+                  </div>
+               </div>
+            </div>
+            <div class="panel-body text-center bg-gray-red">
+               <div class="row row-table">
+                  <div class="col-xs-4">
+                     <li class="aze list-inline-item">
+                        <a class="social-link" (click)="onOpenModal(c, 'edit')"><i
+                              class="text-white bi bi-pencil"></i></a>
+                     </li>
+                  </div>
+                  <div class="col-xs-4">
+                     <li class="aza list-inline-item">
+                        <a (click)="onOpenModal(c, 'delete')" class="social-link"><i class="aas bi bi-trash"></i></a>
+                     </li>
+                  </div>
+               </div>
+            </div>
+            <div class="list-group">
+               <a class="list-group-item">
+                  <span class="label label-primary pull-right">{{ c.adress }}</span>
+                  <i class="bi bi-geo"></i> Adresse :
+               </a>
+               <a class="list-group-item">
+                  <span class="label label-primary pull-right">{{
+                     c.nombreSalles
+                     }}</span>
+                  <i class="bi bi-door-open"></i> Nombre de salles :
+               </a>
+               <a class="list-group-item zz" >
+                  <i class="bi bi-body-text"></i> Description :
+                  <span class="label label-primary pull-right">{{
+                     c.description}}</span>
+               </a>
+            </div>
+         </div>
+         <!-- END widget-->
+      </div>
+   </div>
+</div>
+
+<!--  ***************************************   Add cinema  ****************       -->
+
+<div class="modal fade" id="addCinemaModel" tabindex="-1" role="dialog" aria-labelledby="addEmployeeModalLabel"
+   aria-hidden="true">
+   <div class="modal-dialog" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h4 class="modal-title" id="addEmployeeModalLabel">Ajouter Cinema</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <form #addForm="ngForm" (ngSubmit)="onAddCinema(addForm)">
+               <div class="form-group">
+                  <label for="name">Nom</label>
+                  <input type="text" ngModel name="nom" class="form-control" id="name" placeholder="Azerty.."
+                     required />
+               </div>
+               <div class="form-group">
+                  <label for="exampleFormControlTextarea1">Description</label>
+                  <textarea ngModel name="description" class="form-control" id="exampleFormControlTextarea1"
+                     placeholder="..." rows="3" required></textarea>
+               </div>
+               <div class="form-row">
+                  <div class="form-group col-md-6">
+                     <label for="inputCity"> Adress </label>
+                     <input ngModel name="adress" type="text" class="form-control" id="inputCity" required />
+                  </div>
+
+                  <div class="form-group col-md-4">
+                     <label for="inputState">Ville</label>
+                     <select id="inputState" class="form-select" name="ville" [(ngModel)]="ville" required>
+                        <option [ngValue]="c.idVille" *ngFor="let c of villes">
+                           {{ c.nom }}
+                        </option>
+                     </select>
+                  </div>
+                  <div class="form-group col-md-2">
+                     <label for="inputZip">Nb Salle </label>
+                     <input ngModel name="nombreSalles" type="number" class="form-control" id="inputZip"
+                        pattern="[1-9]{1}" required />
+                  </div>
+               </div>
+               <div class="form-group">
+                  <label for="image"> Image </label><br />
+                  <input ngModel type="file" id="imageid" name="image" accept="image/png, .jpeg, .jpg, image/gif"
+                     required /><br /><br />
+               </div>
+               <div class="modal-footer">
+                  <button type="button" id="add-cinema-form" class="btn btn-danger" data-dismiss="modal">
+                     Annuler
+                  </button>
+                  <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary">
+                     Envoyer
+                  </button>
+               </div>
+            </form>
+         </div>
+      </div>
+   </div>
+</div>
+
+<!-- **************************** Update form *************************-->
+<div class="modal fade" id="updateCinemaModal" tabindex="-1" role="dialog" aria-labelledby="addEmployeeModalLabel"
+   aria-hidden="true">
+   <div class="modal-dialog" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h4 class="modal-title" id="addEmployeeModalLabel">
+               Modifier Cinema {{ editCinema?.nom }}
+            </h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <form #editForm="ngForm">
+               <div class="form-group">
+                  <label for="name">Nom</label>
+                  <input type="text" ngModel="{{ editCinema?.nom }}" name="nom" class="form-control"
+                     placeholder="Azerty.." required />
+               </div>
+               <div class="form-group">
+                  <label for="exampleFormControlTextarea1">Description</label>
+                  <textarea ngModel="{{ editCinema?.description }}" name="description" class="form-control"
+                     placeholder="..." rows="3" required></textarea>
+               </div>
+               <div class="form-row">
+                  <div class="form-group col-md-6">
+                     <label for="inputCity"> Adress </label>
+                     <input ngModel="{{ editCinema?.adress }}" name="adress" type="text" class="form-control"
+                        required />
+                  </div>
+                  <div class="form-group col-md-4">
+                     <label for="inputState">Ville</label>
+                     <select class="form-control" name="ville" [ngModel]="editCinema?.ville.idVille" required>
+                        <option [ngValue]="c.idVille" *ngFor="let c of villes">
+                           {{ c.nom }}
+                        </option>
+                     </select>
+                  </div>
+
+                  <div class="form-group col-md-2">
+                     <label for="inputZip">Nb Salle </label>
+                     <input ngModel="{{ editCinema?.nombreSalles }}" name="nombreSalles" type="number"
+                        class="form-control" id="inputZip" pattern="[1-9]{1}" required />
+                  </div>
+               </div>
+               <div class="form-group">
+                  <input ngModel="{{editCinema?.image }}" type="file" name="image"
+                     accept="image/png, .jpeg, .jpg, image/gif" /><br /><br />
+                  <input ngModel="{{editCinema?.id }}" name="id" type="hidden" class="form-control" />
+               </div>
+
+               <div class="modal-footer">
+                  <button type="button" id="fermer-cinema-form" class="btn btn-danger" data-dismiss="modal">
+                     Annuler
+                  </button>
+                  <button [disabled]="editForm.invalid" (click)="onUpdateCinema(editForm)" class="btn btn-primary">
+                     Envoyer
+                  </button>
+               </div>
+            </form>
+         </div>
+      </div>
+   </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteCinemaModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel"
+   aria-hidden="true">
+   <div class="modal-dialog" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="deleteModelLabel">
+               Effacer Cinema <b class="b">{{ deleteCinema?.nom }}</b>
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <p>Etes-vous sûr que vous voulez supprimer cette Cinema "</p>
+            <div class="modal-footer">
+               <button type="button" id="delete-form" class="btn btn-secondary" data-dismiss="modal">
+                  Annuler
+               </button>
+               <button (click)="onDeleteCinema(deleteCinema?.id)" class="btn btn-danger" data-dismiss="modal">
+                  Effacer
+               </button>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
