@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Cinema } from 'src/app/model/cinema';
 import { Ville } from 'src/app/model/ville';
+import { AuthService } from 'src/app/service/auth.service';
 import { CinemaService } from 'src/app/service/cinema.service';
 import { VilleService } from 'src/app/service/ville.service';
 
@@ -20,7 +21,7 @@ export class CinemaComponent implements OnInit {
   aletSuccess: boolean;
   aletEroor: boolean;
   message: string;
-  constructor(private cinemaService:CinemaService,private villeService:VilleService) { }
+  constructor(private cinemaService:CinemaService,private villeService:VilleService ,public authService:AuthService) { }
 
   ngOnInit(): void {
     this.getAllVilles();

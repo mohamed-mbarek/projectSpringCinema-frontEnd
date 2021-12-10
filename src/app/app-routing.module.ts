@@ -14,7 +14,6 @@ const appRoutes:Routes=[
     {path :'login',component:LoginComponent},
     {path :'app-forbiden',component:ForbidenComponent}
 
-
 ];
 
 @NgModule({

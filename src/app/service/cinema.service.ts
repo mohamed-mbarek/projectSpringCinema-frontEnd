@@ -1,8 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Cinema } from '../model/cinema';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,20 +11,33 @@ import { Cinema } from '../model/cinema';
 export class CinemaService {
   private apiServiceUrl = environment.apiBaseUrl;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient ,private authService:AuthService) { }
 
   public getCinemas(): Observable<Cinema[]> {
-    return this.http.get<Cinema[]>(`${this.apiServiceUrl}/cinema/all`);
+    let jwt = this.authService.getToken();
+      jwt = "Bearer "+jwt;
+      let httpHeaders = new HttpHeaders({"Authorization":jwt}) 
+    return this.http.get<Cinema[]>(`${this.apiServiceUrl}/cinema/all`,{headers:httpHeaders});
   }
 
 
   public addCinema(cinema: Cinema): Observable<Cinema> {
-    return this.http.post<Cinema>(`${this.apiServiceUrl}/cinema/add`, cinema);
+    let jwt = this.authService.getToken();
+    jwt = "Bearer "+jwt;
+    let httpHeaders = new HttpHeaders({"Authorization":jwt}) 
+    return this.http.post<Cinema>(`${this.apiServiceUrl}/cinema/add`, cinema ,{headers:httpHeaders});
   }
+
   public Updatecinema(cinema: Cinema): Observable<Cinema> {
-    return this.http.put<Cinema>(`${this.apiServiceUrl}/cinema/update`, cinema);
+    let jwt = this.authService.getToken();
+    jwt = "Bearer "+jwt;
+    let httpHeaders = new HttpHeaders({"Authorization":jwt})
+    return this.http.put<Cinema>(`${this.apiServiceUrl}/cinema/update`, cinema,{headers:httpHeaders});
   }
   public deletecinema(cinemaId: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiServiceUrl}/cinema/delete/${cinemaId}`);
+    let jwt = this.authService.getToken();
+    jwt = "Bearer "+jwt;
+    let httpHeaders = new HttpHeaders({"Authorization":jwt}) 
+    return this.http.delete<void>(`${this.apiServiceUrl}/cinema/delete/${cinemaId}`,{headers:httpHeaders});
   }
 }

@@ -8,7 +8,7 @@
          <h2 class="display-4 font-weight-light">Liste de cinéma</h2>
          <br />
          <div class="form-group mb-2">
-            <button type="button" class="btn btn-primary bu22" data-toggle="modal" (click)="onOpenModal(null, 'add')"
+            <button  type="button" class="btn btn-primary bu22" data-toggle="modal"   *ngIf="authService.isAdmin()" (click)="onOpenModal(null, 'add')"
                data-target="#exampleModal">
                <i class="bi bi-plus-circle"></i> Ajouter
             </button>
@@ -60,14 +60,14 @@
             <div class="panel-body text-center bg-gray-red">
                <div class="row row-table">
                   <div class="col-xs-4">
-                     <li class="aze list-inline-item">
-                        <a class="social-link" (click)="onOpenModal(c, 'edit')"><i
+                     <li class="aze list-inline-item"  *ngIf="authService.isAdmin()" >
+                        <a class="social-link"  (click)="onOpenModal(c, 'edit')"><i
                               class="text-white bi bi-pencil"></i></a>
                      </li>
                   </div>
                   <div class="col-xs-4">
-                     <li class="aza list-inline-item">
-                        <a (click)="onOpenModal(c, 'delete')" class="social-link"><i class="aas bi bi-trash"></i></a>
+                     <li *ngIf="authService.isAdmin()" class="aza list-inline-item">
+                        <a   (click)="onOpenModal(c, 'delete')" class="social-link"><i class="aas bi bi-trash"></i></a>
                      </li>
                   </div>
                </div>
